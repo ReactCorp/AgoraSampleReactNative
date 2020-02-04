@@ -1,106 +1,90 @@
 import React from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
-  ScrollView,
   View,
   Text,
-  StatusBar,
+  NativeModules,
+  PermissionsAndroid,
 } from 'react-native';
+import { RtcEngine } from 'react-native-agora';
+import { addListener, getHeadset } from 'react-native-bluetooth-headset-detect';
 
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const { Agora } = NativeModules;
+const APP_ID = "2e0cee1dfa824858a8acc127d9dd15ac";
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <Header />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
-            </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
-                <ReloadInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
-                <DebugInstructions />
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
-                Read the docs to discover what to do next:
-              </Text>
-            </View>
-            <LearnMoreLinks />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
-};
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    //this.isBluetooth = getHeadset();
+    this.state = {
+      users: [],
+    }
 
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
+    /*addListener((device) => {
+      this.isBluetooth = device !== null;
+      RtcEngine.leaveChannel().then(() => {
+        console.log("Leave channel");
+        setTimeout(() => {
+          this.joinChannel(() => RtcEngine.setEnableSpeakerphone(true));
+        }, 1000);
+      });
+
+      console.log('Connected device:', device);
+    });*/
+  }
+
+  componentDidMount() {
+    this.requestPermission();
+    this.joinChannel();
+  }
+
+  async requestPermission() {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        {
+          'title': "Please allow mic",
+          'buttonPositive': "OK",
+        }
+      );
+      return granted;
+    } catch (err) {
+      console.warn(err);
+      throw e;
+    }
+  }
+
+  joinChannel = (callback=null) => {
+    RtcEngine.init({
+      appid: APP_ID,
+      channelProfile: 0,
+      mode: 0,
+      audioProfile: Agora.AudioProfileDefault,
+      //audioScenario: this.isBluetooth ? 3 : Agora.AudioScenarioDefault,
+      audioScenario: 3,
+    });
+
+
+    RtcEngine.setParameters("{\"che.audio.force.bluetooth.a2dp\":true}")
+
+    RtcEngine.joinChannel("demoChannel1").then(res => {
+      console.log("joined");
+      callback && callback();
+    })
+  }
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text>Text</Text>
+      </View>
+    );
+  }
+}
 
 export default App;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
