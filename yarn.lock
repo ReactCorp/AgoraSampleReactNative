@@ -4735,10 +4735,6 @@ react-native-agora@^2.9.1-alpha.2:
   dependencies:
     tslib "^1.9.3"
 
-react-native-bluetooth-headset-detect@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/react-native-bluetooth-headset-detect/-/react-native-bluetooth-headset-detect-2.0.0.tgz#7db49a4a37ed1fb77df3b56fa67780dbbcd1772c"
-
 react-native@0.61.5:
   version "0.61.5"
   resolved "https://registry.yarnpkg.com/react-native/-/react-native-0.61.5.tgz#6e21acb56cbd75a3baeb1f70201a66f42600bba8"

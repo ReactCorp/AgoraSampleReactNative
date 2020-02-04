@@ -7,30 +7,15 @@ import {
   PermissionsAndroid,
 } from 'react-native';
 import { RtcEngine } from 'react-native-agora';
-import { addListener, getHeadset } from 'react-native-bluetooth-headset-detect';
-
 const { Agora } = NativeModules;
-const APP_ID = "2e0cee1dfa824858a8acc127d9dd15ac";
+import { APP_ID } from './AppId';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
-    //this.isBluetooth = getHeadset();
     this.state = {
       users: [],
     }
-
-    /*addListener((device) => {
-      this.isBluetooth = device !== null;
-      RtcEngine.leaveChannel().then(() => {
-        console.log("Leave channel");
-        setTimeout(() => {
-          this.joinChannel(() => RtcEngine.setEnableSpeakerphone(true));
-        }, 1000);
-      });
-
-      console.log('Connected device:', device);
-    });*/
   }
 
   componentDidMount() {
@@ -60,10 +45,8 @@ class App extends React.Component {
       channelProfile: 0,
       mode: 0,
       audioProfile: Agora.AudioProfileDefault,
-      //audioScenario: this.isBluetooth ? 3 : Agora.AudioScenarioDefault,
       audioScenario: 3,
     });
-
 
     RtcEngine.setParameters("{\"che.audio.force.bluetooth.a2dp\":true}")
 
