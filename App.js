@@ -48,8 +48,6 @@ class App extends React.Component {
       audioScenario: 3,
     });
 
-    RtcEngine.setParameters("{\"che.audio.force.bluetooth.a2dp\":true}")
-
     RtcEngine.joinChannel("demoChannel1").then(res => {
       console.log("joined");
       callback && callback();

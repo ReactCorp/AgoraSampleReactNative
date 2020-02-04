@@ -1,1 +1,1 @@
-export const APP_ID = "";
+export const APP_ID = "2e0cee1dfa824858a8acc127d9dd15ac";
